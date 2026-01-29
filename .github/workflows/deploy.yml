@@ -28,14 +28,12 @@ jobs:
         with:
           context: ./app
           push: true
-          # Remplace 'gazoaal/lyricle' par ton image EXACTE
-          tags: gazoaal/lyricle:latest 
+          tags: gazoaal/lyricle:latest
 
       # 4. Déployer sur Azure Web App
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          # Remplace par le nom de ton App Service sur Azure (ex: lyricle-app-gazoaal)
-          app-name: 'NOM_DE_TON_APP_AZURE' 
+          app-name: 'lyricle-app-gazoaal' 
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           images: 'gazoaal/lyricle:latest'
