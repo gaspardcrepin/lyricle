@@ -192,8 +192,16 @@ def check_guess():
         "streams": row_guess[7]
     }
 
+    def clean_str(s):
+        if not s: return ""
+        return s.lower().strip()
+
+    # On compare les versions propres
+    target_clean = clean_str(target['title'])
+    guess_clean = clean_str(guessed['title'])
+
     # 4. COMPARAISON ET CONSTRUCTION DE LA RÉPONSE JSON
-    is_correct = (guessed['title'] == target['title'])
+    is_correct = (guess_clean == target_clean)
 
     result = {
         "is_correct": is_correct,
