@@ -3,6 +3,7 @@ import datetime
 import psycopg2
 import random
 from flask import Flask, render_template, request, jsonify, session
+import re
 
 app = Flask(__name__)
 app.secret_key = "secret_key_dev"
@@ -194,7 +195,16 @@ def check_guess():
 
     def clean_str(s):
         if not s: return ""
-        return s.lower().strip()
+        t = s.lower()
+        # Enlever parenthèses (...) ou crochets [...]
+        t = re.sub(r"\(.*?\)", "", t)
+        t = re.sub(r"\[.*?\]", "", t)
+        # Enlever après un tiret (ex: " - Remastered 2022")
+        t = t.split('-')[0]
+        # Enlever la ponctuation inutile
+        t = re.sub(r"[^a-z0-9\s]", "", t)
+        # Enlever les espaces multiples et les espaces au début/fin
+        return t.strip()
 
     # On compare les versions propres
     target_clean = clean_str(target['title'])
