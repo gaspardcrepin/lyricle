@@ -1,0 +1,325 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+
+:root {
+    --bg-color: #121213;
+    --card-bg: #1e1e1e;
+    --input-bg: #272729;
+    --border-color: #3a3a3c;
+    --text-color: #ffffff;
+    --accent-color: #538d4e; /* Vert Wordle */
+    --accent-glow: rgba(83, 141, 78, 0.4);
+    --wrong-color: #cf3939;  /* Rouge */
+    --hover-color: #2c2c2e;
+}
+
+body {
+    font-family: 'Inter', sans-serif; /* Police moderne */
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+h1 {
+    font-weight: 800;
+    letter-spacing: -1px;
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    background: linear-gradient(to right, #fff, #aaa);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* --- BLOC PAROLES (Quote Card) --- */
+.snippet-container {
+    background: linear-gradient(145deg, #1e1e1e, #252525);
+    padding: 40px;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 40px;
+    max-width: 650px;
+    width: 100%;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    overflow: hidden;
+}
+
+/* Grosse guillemet décorative en arrière-plan */
+.snippet-container::before {
+    content: '“';
+    position: absolute;
+    top: -20px;
+    left: 20px;
+    font-size: 10rem;
+    color: rgba(255, 255, 255, 0.03);
+    font-family: serif;
+    pointer-events: none;
+}
+
+.snippet {
+    font-size: 1.5rem;
+    font-weight: 600;
+    font-style: italic;
+    line-height: 1.4;
+    color: #ffeb3b;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+/* --- ZONE DE RECHERCHE (Le gros changement) --- */
+.game-interface {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 500px; /* Plus large */
+    margin-bottom: 40px;
+    z-index: 100; /* Au dessus des résultats */
+}
+
+/* Icône de loupe en CSS/SVG positionnée */
+.search-icon {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    pointer-events: none;
+    transition: color 0.3s;
+}
+
+input {
+    width: 100%;
+    padding: 20px 20px 20px 55px; /* Place pour l'icône à gauche */
+    font-size: 1.1rem;
+    font-family: 'Inter', sans-serif;
+    background-color: var(--input-bg);
+    border: 2px solid var(--border-color);
+    color: white;
+    border-radius: 12px; /* Coins bien arrondis */
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+input::placeholder { color: #666; }
+
+/* Effet Focus "Glow" */
+input:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 4px var(--accent-glow), 0 10px 20px rgba(0,0,0,0.4);
+    background-color: #2c2c2e;
+    transform: translateY(-2px);
+}
+input:focus + .search-icon { color: var(--accent-color); }
+
+/* --- LISTE SUGGESTIONS --- */
+.suggestions-list {
+    position: absolute;
+    top: 110%; /* Juste en dessous avec un petit gap */
+    left: 0;
+    width: 100%;
+    background: #1a1a1b;
+    border: 1px solid var(--border-color);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border-radius: 12px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+    overflow: hidden; /* Pour les coins arrondis */
+    max-height: 300px;
+    overflow-y: auto;
+    opacity: 0;
+    transform: translateY(-10px);
+    animation: fadeInDrop 0.2s forwards ease-out;
+}
+
+@keyframes fadeInDrop { to { opacity: 1; transform: translateY(0); } }
+
+/* Scrollbar Custom (WebKit) */
+.suggestions-list::-webkit-scrollbar { width: 8px; }
+.suggestions-list::-webkit-scrollbar-track { background: #1a1a1b; }
+.suggestions-list::-webkit-scrollbar-thumb { background: #444; border-radius: 4px; }
+.suggestions-list::-webkit-scrollbar-thumb:hover { background: #555; }
+
+.suggestions-list li {
+    padding: 15px 20px;
+    cursor: pointer;
+    border-bottom: 1px solid #2a2a2c;
+    display: flex;
+    flex-direction: column; /* Titre haut, artiste bas */
+    transition: background 0.1s;
+}
+
+.suggestions-list li:last-child { border-bottom: none; }
+
+/* Typographie des suggestions */
+.song-title { font-weight: 700; font-size: 1rem; color: #fff; margin-bottom: 4px; }
+.artist-hint { font-weight: 400; font-size: 0.85rem; color: #888; }
+
+/* Hover souris & Navigation Clavier */
+.suggestions-list li:hover, .suggestion-active {
+    background-color: var(--hover-color);
+    border-left: 4px solid var(--accent-color);
+    padding-left: 16px; /* Compenser la bordure pour que le texte ne bouge pas */
+}
+
+/* --- RESULTATS --- */
+.headers {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 0.8fr 0.8fr;
+    gap: 10px;
+    width: 100%;
+    max-width: 850px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.results-container {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 10px;
+    width: 100%;
+    max-width: 850px;
+    padding-bottom: 60px;
+}
+
+.guess-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr 0.8fr 0.8fr;
+    gap: 10px;
+}
+
+.tile {
+    height: 75px;
+    background-color: var(--bg-color);
+    border: 2px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-align: center;
+    border-radius: 8px;
+    position: relative;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.tile span { font-size: 0.65em; font-weight: 600; color: #666; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* Animation lente */
+@keyframes flip-reveal {
+    0% { transform: rotateX(0); background-color: var(--bg-color); border-color: var(--border-color); }
+    50% { transform: rotateX(90deg); background-color: var(--bg-color); border-color: var(--border-color); }
+    51% { background-color: var(--card-bg); border-color: transparent; }
+    100% { transform: rotateX(0); }
+}
+
+.tile.revealed { animation: flip-reveal 1s cubic-bezier(0.4, 0, 0.2, 1) forwards; color: white; }
+.tile.revealed.status-correct { background-color: var(--accent-color) !important; border-color: var(--accent-color) !important; box-shadow: 0 0 15px var(--accent-glow); }
+.tile.revealed.status-wrong { background-color: var(--wrong-color) !important; border-color: var(--wrong-color) !important; }
+
+.arrow { font-size: 1.2rem; margin-top: 2px; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3)); }
+
+/* --- MODAL --- */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(8px);
+    display: none; justify-content: center; align-items: center; z-index: 2000;
+}
+.modal {
+    background: #18181a; border: 1px solid #444; padding: 50px; border-radius: 20px; text-align: center;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5); animation: zoomIn 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28); max-width: 90%;
+}
+@keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* Mobile */
+@media (max-width: 600px) {
+    .guess-row, .headers { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .tile { height: 65px; font-size: 0.8rem; }
+    .headers { display: none; }
+    .snippet { font-size: 1.1rem; }
+    input { padding-left: 45px; } /* Ajustement icône mobile */
+}
+
+/* --- LE CONTENEUR --- */
+.mode-selector {
+    display: flex;
+    justify-content: center;
+    gap: 15px; /* Espace entre les boutons */
+    margin: 20px 0;
+}
+
+/* --- LE BOUTON DE BASE --- */
+.mode-btn {
+    background-color: #2a2a2a; /* Gris foncé (inactif) */
+    border: 2px solid #3a3a3a; /* Bordure subtile */
+    color: #aaa; /* Texte grisé */
+    padding: 12px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 50px; /* Forme de pilule arrondie */
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Transition fluide */
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espace entre l'émoji et le texte */
+    outline: none;
+    position: relative;
+    overflow: hidden;
+}
+
+/* --- AU SURVOL (HOVER) --- */
+.mode-btn:hover {
+    background-color: #333;
+    color: #fff;
+    transform: translateY(-2px); /* Le bouton remonte un peu */
+    border-color: #555;
+}
+
+/* --- AU CLIC (ACTIVE) --- */
+.mode-btn:active {
+    transform: scale(0.95); /* Effet d'enfoncement */
+}
+
+/* --- ÉTAT SÉLECTIONNÉ (La classe .active ajoutée par JS) --- */
+.mode-btn.active {
+    background-color: #538d4e; /* Le vert "Victoire" */
+    color: white;
+    border-color: #538d4e;
+    box-shadow: 0 4px 15px rgba(83, 141, 78, 0.4); /* Lueur verte */
+}
+
+/* Petit effet de brillance sur le bouton actif (Optionnel) */
+.mode-btn.active::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(255,255,255,0.2), transparent);
+    pointer-events: none;
+}

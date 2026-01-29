@@ -1,0 +1,52 @@
+services:
+  # 1. Base de données
+  db:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_USER: user_lyricle
+      POSTGRES_PASSWORD: password_secure
+      POSTGRES_DB: lyricle_db
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - lyricle-network
+    ports:
+      - "5432:5432"
+
+  # 2. Application Flask
+  web:
+    build: ./app
+    restart: always
+    expose:
+      - "5000"
+    environment:
+      DB_HOST: db
+      DB_NAME: lyricle_db
+      DB_USER: user_lyricle
+      DB_PASSWORD: password_secure
+    depends_on:
+      - db
+    networks:
+      - lyricle-network
+
+  # 3. Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    restart: always
+    ports:
+      - "80:80" # Port public
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - web
+    networks:
+      - lyricle-network
+
+volumes:
+  postgres_data:
+
+networks:
+  lyricle-network:
+    driver: bridge

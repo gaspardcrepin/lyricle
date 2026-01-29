@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RapUsle</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <h1>🎵 RapUsle</h1>
+    
+    <div id="lyrics-container" class="snippet-container">
+        
+        <div class="snippet">{{ snippet }}</div>
+        
+    </div>
+
+    <div class="game-interface">
+
+        <div class="mode-selector">
+            <button id="btn-daily" class="mode-btn active">📅 Daily Challenge</button>
+            <button id="btn-unlimited" class="mode-btn">♾️ Arcade Mode</button>
+        </div>
+
+        <div id="next-song-container" style="display:none; text-align: center; margin-top: 20px;">
+            <button onclick="startUnlimitedGame()" class="retry-btn">🎵 Musique Suivante ➡️</button>
+        </div>
+        
+        <div class="input-wrapper">
+            <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            
+            <input type="text" id="guessInput" placeholder="Cherche un titre ou un artiste..." autocomplete="off">
+            <ul id="suggestions" class="suggestions-list"></ul>
+        </div>
+
+        <div class="headers">
+            <div>Titre</div>
+            <div>Artiste</div>
+            <div>Genre</div>
+            <div>Pays</div>
+            <div>Année</div>
+            <div>Popularité</div>
+        </div>
+
+        <div id="results" class="results-container"></div>
+    </div>
+
+    <div id="winModal" class="modal-overlay">
+        <div class="modal">
+            <h2 style="color: #538d4e; margin-bottom: 10px;">Victoire ! 🎉</h2>
+            <p style="color: #aaa;">Tu as trouvé la musique du jour.</p>
+            <p id="win-song-title" style="color: white; font-weight: 800; font-size: 1.8rem; margin: 20px 0;"></p>
+            <button onclick="closeModal()" style="background: #538d4e; border:none; color:white; padding: 15px 40px; border-radius: 50px; font-weight:bold; font-size:1.1rem; cursor:pointer; transition: transform 0.2s;">Fermer</button>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+</body>
+</html>
